@@ -15,3 +15,14 @@ totalBills.push(tips[2] + bills[2]);
 console.log(`The bills are ${bills}
 the tips are ${tips} 
 and the total bills are ${totalBills}`);
+
+const Abhay = {
+    fName: 'Abhay',
+    lName: 'Parashar',
+    friends: ["Tanay", "Ervin", "Shawn"]
+};
+
+console.log(Abhay['f' + 'Name']);
+Abhay['location'] = "Canada";
+Abhay.email = "abhayparasharr@gmail.com"
+console.log(`Abhay has ${Abhay.friends.length} friends and his best friend is called ${Abhay.friends[0]}`);
