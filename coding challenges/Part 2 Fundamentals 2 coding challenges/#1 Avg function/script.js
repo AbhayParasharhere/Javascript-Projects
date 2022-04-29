@@ -13,7 +13,7 @@ const calcAvg = function (score1, score2, score3) {
 
 const checkWinner = function (avgDolhins, avgKoalas) {
     let result;
-    avgDolhins > avgKoalas ? result = `Dolphins win(${avgDolhins} vs. ${avgKoalas})` : result = `Koalas win(${avgKoalas} vs. ${avgDolhins})`;
+    avgDolhins >= 2 * avgKoalas ? result = `Dolphins win(${avgDolhins} vs. ${avgKoalas})` : result = `Koalas win(${avgKoalas} vs. ${avgDolhins})`;
     console.log(result);
     return result;
 }
