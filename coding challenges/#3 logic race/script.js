@@ -15,7 +15,7 @@ else if ((dolphinAverage === koalaAverage) && (dolphinAverage >= 100)) {
     console.log(`Tie between Dolphins and Koalas with an average score of ${dolphonAverage} . Both teams win `);
 }
 else if ((koalaAverage > dolphinAverage) && (koalaAverage >= 100)) {
-    console.log(`The winner is Koalas with an average score of ${koalsAverage}`);
+    console.log(`The winner is Koalas with an average score of ${koalaAverage}`);
 }
 else {
     console.log(`No team won since both team's average score is less than 100
