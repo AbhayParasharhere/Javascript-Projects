@@ -11,10 +11,15 @@ document.querySelector('.guess').value = 999;
 console.log(`After changing the value of INPUT field is
  ${document.querySelector('.guess').value}`);
  **/
+const generateKey = function () {
+  return Math.trunc(Math.random() * 20) + 1;
+};
 
-const keyVal = Math.trunc(Math.random() * 20) + 1;
+let keyVal = generateKey();
 let score = 20;
 let highScore = 0;
+
+console.log(keyVal);
 
 document.querySelector('.check').addEventListener('click', function () {
   const guessVal = Number(document.querySelector('.guess').value);
@@ -64,11 +69,15 @@ document.querySelector('.check').addEventListener('click', function () {
 });
 
 document.querySelector('.again').addEventListener('click', function () {
-  document.querySelector('body').style.backgroundColor = '#222';
   score = 20;
+  keyVal = generateKey();
+
+  document.querySelector('body').style.backgroundColor = '#222';
   document.querySelector('.score').textContent = String(score);
   document.querySelector('.message').textContent = 'Start Guessing';
   document.querySelector('.guess').value = '';
   document.querySelector('.number').style.width = '15rem';
   document.querySelector('.number').textContent = '?';
+
+  console.log(keyVal);
 });
