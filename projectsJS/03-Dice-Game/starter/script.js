@@ -35,9 +35,9 @@ const rollDice = function () {
 };
 
 let scores = [0, 0];
-let currentScores = [0, 0];
 let diceVal = 0;
 let activePlayerNo = findActivePlayer();
+let curScore = 0;
 
 const switchPlayer = function () {
   if (activePlayerNo === 0) {
@@ -60,15 +60,13 @@ const rollDiceHandler = function () {
       resetCurrentScore();
       switchPlayer();
     } else {
-      currentScores[activePlayerNo] += Number(diceVal);
-      curScoreLabels[activePlayerNo].textContent = String(
-        currentScores[activePlayerNo]
-      );
+      curScore += Number(diceVal);
+      curScoreLabels[activePlayerNo].textContent = String(curScore);
     }
   }
 };
 const resetCurrentScore = function () {
-  currentScores[activePlayerNo] = 0;
+  curScore = 0;
   curScoreLabels[activePlayerNo].textContent = 0;
 };
 
@@ -83,7 +81,7 @@ const win = function () {
 
 const holdScoreHandler = function () {
   if (continuePlay) {
-    scores[activePlayerNo] += currentScores[activePlayerNo];
+    scores[activePlayerNo] += curScore;
     scoreLabels[activePlayerNo].textContent = String(scores[activePlayerNo]);
     if (scores[activePlayerNo] >= 100) {
       win();
@@ -97,7 +95,7 @@ const holdScoreHandler = function () {
 const resetGameHandler = function () {
   for (let i = 0; i < 2; i++) {
     scores[i] = 0;
-    currentScores[i] = 0;
+    curScore = 0;
     scoreLabels[i].textContent = 0;
     curScoreLabels[i].textContent = 0;
     players[i].classList.remove('player--winner');
