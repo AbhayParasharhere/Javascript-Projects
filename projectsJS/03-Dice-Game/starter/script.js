@@ -10,6 +10,7 @@ const newBtn = document.querySelector('.btn--new');
 const diceImg = document.querySelector('.dice');
 
 const initialGameSet = function () {
+  diceImg.classList.add('hidden');
   // can use querySelectorAll but this way less error prone
   for (let i = 0; i < 2; i++) {
     scoreLabels[i] = document.querySelector(`#score--${i}`);
@@ -52,6 +53,7 @@ const switchPlayer = function () {
 };
 
 const rollDiceHandler = function () {
+  diceImg.classList.remove('hidden');
   if (continuePlay) {
     diceVal = rollDice();
     diceImg.classList.remove('hidden');
@@ -72,11 +74,12 @@ const resetCurrentScore = function () {
 
 const win = function () {
   continuePlay = false;
-  diceImg.classList.add('.hidden');
+  diceImg.classList.add('hidden');
 
   players[activePlayerNo].classList.add('player--winner');
 
   players[activePlayerNo].classList.remove('player--active');
+  diceImg.classList.add('hidden');
 };
 
 const holdScoreHandler = function () {
