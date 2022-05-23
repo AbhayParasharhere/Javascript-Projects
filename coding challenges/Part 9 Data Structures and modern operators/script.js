@@ -41,14 +41,19 @@ const game = {
   },
 };
 
-const gk1 = 'Leo';
-const gk2 = 'John';
+// const gk1 = 'Leo';
+// const gk2 = 'John';
 
-const fieldPlayers1 = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a9', 'a10'];
-const fieldPlayers2 = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b9', 'b10'];
+// const fieldPlayers1 = ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a9', 'a10'];
+// const fieldPlayers2 = ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b9', 'b10'];
 
-const players1 = [gk1, ...fieldPlayers1];
-const players2 = [gk2, ...fieldPlayers2];
+// const players1 = [gk1, ...fieldPlayers1];
+// const players2 = [gk2, ...fieldPlayers2];
+
+const [players1, players2] = game.players;
+
+const [gk1, ...fieldPlayers1] = players1;
+const [gk2, ...fieldPlayers2] = players2;
 
 const allPlayers = [...players1, ...players2];
 
