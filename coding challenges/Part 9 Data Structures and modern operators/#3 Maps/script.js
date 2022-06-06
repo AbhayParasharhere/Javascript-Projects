@@ -70,3 +70,9 @@ for (const [key, value] of gameEvents) {
   gameHalf = key > 45 ? '[SECOND HALF]' : '[FIRST HALF]';
   console.log(`${gameHalf} ${key}: ${value}`);
 }
+
+const str = 'Abhay Parashar';
+
+console.log(str.slice(2, -2));
+console.log(str.slice(2, 12));
+console.log(str.length);
