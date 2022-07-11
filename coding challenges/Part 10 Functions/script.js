@@ -6,19 +6,15 @@ const poll = {
   // This generates [0, 0, 0, 0]. More in the next section!
   answers: new Array(4).fill(0),
   registerNewAnswer() {
-    const answer = prompt(`What is your favourite programming language?
-    0: JavaScript
-    1: Python
-    2: Rust
-    3: C++
-    (Write option number)`);
+    const answer = prompt(`${this.question}\n${this.options.join('\n')}
+    \n(Write option number)`);
     if (answer == 0 || answer == 1 || answer == 2 || answer == 3) {
       this.answers[Number(answer)] += 1;
     }
     console.log(this.answers);
     this.displayResults('string');
   },
-  displayResults(type) {
+  displayResults(type = 'array') {
     if (type === 'array') {
       console.log(this.answers);
     } else if (type === 'string') {
