@@ -5,6 +5,7 @@
 // BANKIST APP
 
 // Data
+
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
@@ -61,15 +62,21 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const calcAndDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, val) => acc + val, 0);
+const calcAndDisplayBalance = function (account) {
+  const balance = account.movements.reduce((acc, val) => acc + val, 0);
+  account.balance = balance;
   labelBalance.textContent = `${balance}€`;
 };
 
-const updateMovements = function (movements) {
+const updateMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ''; // clear the existing htm code
 
-  movements.forEach(function (movement, index) {
+  // sort the array if sorted is true
+  const transactions = sort
+    ? movements.slice().sort((a, b) => a - b)
+    : movements;
+
+  transactions.forEach(function (movement, index) {
     const moveType = movement > 0 ? 'deposit' : 'withdrawal';
     const htmlCode = `
     <div class="movements__row">
@@ -94,23 +101,140 @@ const createUserNames = function (accounts) {
   });
 };
 
-const calcDisplaySummary = function (movements) {
-  const income = movements
+const calcDisplaySummary = function (account) {
+  const income = account.movements
     .filter(balance => balance > 0)
     .reduce((acc, balance) => acc + balance, 0);
 
-  const incomeOut = movements
+  const incomeOut = account.movements
     .filter(transaction => transaction < 0)
+    .reduce((acc, amount) => acc + amount, 0);
+
+  const interest = account.movements
+    .filter(transaction => transaction > 0)
+    .map(deposit => (deposit * account.interestRate) / 100)
+    .filter(interest => interest >= 1)
     .reduce((acc, amount) => acc + amount, 0);
 
   labelSumIn.textContent = `${income}€`;
   labelSumOut.textContent = `${Math.abs(incomeOut)}€`;
+  labelSumInterest.textContent = `${interest}€`;
 };
-
-updateMovements(account1.movements);
+const updateUI = function (acc) {
+  calcAndDisplayBalance(acc);
+  updateMovements(acc.movements);
+  calcDisplaySummary(acc);
+};
 createUserNames(accounts);
-calcAndDisplayBalance(account1.movements);
-calcDisplaySummary(account1.movements);
+
+// Event handlers
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    account => account.username === inputLoginUsername.value
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //display UI, and greet user
+    labelWelcome.textContent = `Welcome back ${currentAccount.owner
+      .split(' ')
+      .at(0)}`;
+    containerApp.style.opacity = 100;
+
+    //update UI
+    updateUI(currentAccount);
+
+    // clear input fields
+    inputLoginUsername.value = '';
+    inputLoginPin.value = '';
+
+    // remove focus from the pin by removing the cursor from there
+    inputLoginPin.blur();
+  }
+});
+
+// transfer button
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+
+  const transferAcc = accounts.find(
+    account => account.username === inputTransferTo.value
+  );
+
+  if (
+    amount > 0 &&
+    amount <= currentAccount.balance &&
+    transferAcc.username !== currentAccount.username
+  ) {
+    // transfer money
+    transferAcc?.movements.push(amount);
+
+    // reduce money from cur account
+    currentAccount.movements.push(-amount);
+
+    // calculate new cur balance, new summary and update movements
+    updateUI(currentAccount);
+  }
+  // clear fields and blur focus
+  inputTransferAmount.value = '';
+  inputTransferTo.value = '';
+  inputTransferAmount.blur();
+});
+
+// delete account button
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const indexToDelete = accounts.findIndex(
+      account => account.username === currentAccount.username
+    );
+    // delete account
+    accounts.splice(indexToDelete, 1);
+  }
+
+  // logout user and clear fields
+  inputCloseUsername.value = inputClosePin.value = '';
+  containerApp.style.opacity = 0;
+  inputClosePin.blur();
+});
+
+// Grant loan button
+// Loan condition grant loan if any deposit is greater than 10% of loan ammount
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (
+    currentAccount.movements.some(transaction => transaction >= 0.1 * amount) &&
+    amount > 0
+  ) {
+    // give loan
+    currentAccount.movements.push(Number(inputLoanAmount.value));
+
+    // update UI
+    updateUI(currentAccount);
+
+    // clear fields and reset
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+  }
+});
+
+// Sort button
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  updateMovements(currentAccount.movements, !sorted);
+
+  sorted = !sorted;
+});
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -136,5 +260,38 @@ const balance = movements.reduce(function (accumulator, transaction, index) {
   return transaction + accumulator;
 }, 0);
 
-console.log(balance);
-/////////////////////////////////////////////////
+// labelBalance.addEventListener('click', function () {
+//   console.log(document.querySelectorAll('.movements__value'));
+// });
+
+// console.log(
+//   Array.from({ length: 10 }, (elem, x) => {
+//     return x + 1;
+//   })
+// );
+
+const totalDeposit = accounts
+  .flatMap(function (elem, index) {
+    return elem.movements;
+  })
+  .filter(amount => amount > 0)
+  .reduce((acc, amount) => acc + amount);
+
+console.log(totalDeposit);
+
+const noDepositAtleast1000 = accounts
+  .flatMap(account => account.movements)
+  .filter(amount => amount >= 1000).length;
+console.log(noDepositAtleast1000);
+
+const { deposit, withdraw } = accounts
+  .flatMap(account => account.movements)
+  .reduce(
+    (sum, amount) => {
+      amount > 0 ? (sum.deposit += amount) : (sum.withdraw += amount);
+      return sum;
+    },
+    { deposit: 0, withdraw: 0 }
+  );
+
+console.log(deposit, withdraw);
