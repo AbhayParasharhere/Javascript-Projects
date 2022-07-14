@@ -153,7 +153,7 @@ const formatAmount = function (amount, locale, usrCurrency) {
 };
 
 const updateMovements = function (acc, sort = false) {
-  containerMovements.innerHTML = ''; // clear the existing htm code
+  containerMovements.innerHTML = ''; // clear the existing html code
 
   // sort the array if sorted is true
   const transactions = sort
@@ -248,13 +248,13 @@ const manageLoginTime = function () {
   // logout after 5 minutes have passed
   logoutTimer = setTimeout(function () {
     containerApp.style.opacity = 0;
+    labelWelcome.textContent = `Log in to get started`;
     clearInterval(countdownTimer);
   }, timeUntilLogout + 1000);
 
   const dateObj = new Date(0);
   dateObj.setMinutes(timeUntilLogout / (60 * 1000));
   dateObj.setSeconds(1);
-  console.log(dateObj);
 
   // timer that displays time passed called every second
   countdownTimer = setInterval(function () {
@@ -326,6 +326,11 @@ btnTransfer.addEventListener('click', function (e) {
 
     // calculate new cur balance, new summary and update movements
     updateUI(currentAccount);
+
+    // clear timers
+    clearInterval(countdownTimer);
+    clearTimeout(logoutTimer);
+    manageLoginTime();
   }
   // clear fields and blur focus
   inputTransferAmount.value = '';
@@ -381,6 +386,11 @@ btnLoan.addEventListener('click', function (e) {
       transacDate,
       currentAccount
     );
+
+    // clear timers
+    clearInterval(countdownTimer);
+    clearTimeout(logoutTimer);
+    manageLoginTime();
 
     // clear fields and reset
     inputLoanAmount.value = '';
